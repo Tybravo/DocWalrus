@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .bg-deep-space {
+    background: linear-gradient(180deg, #0A1A2F 0%, #0D2538 100%);
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .glass-nav {
+    background: rgba(13, 25, 43, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  }
+
+  .glass-card-orange {
+    background: rgba(244, 162, 97, 0.65);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .hover-glow-cyan-orange:hover {
+    box-shadow:
+      0 8px 32px rgba(0, 255, 255, 0.25),
+      0 4px 18px rgba(244, 162, 97, 0.25);
+  }
+
+  .btn-primary-glow {
+    position: relative;
+    color: #e6fdff;
+    background: rgba(0, 255, 255, 0.08);
+    border: 1px solid rgba(0, 255, 255, 0.45);
+    box-shadow: 0 0 0px rgba(0, 255, 255, 0.0), inset 0 0 0 transparent;
+    transition: box-shadow 200ms ease, transform 200ms ease, border-color 200ms ease, background 200ms ease;
+  }
+  .btn-primary-glow:hover {
+    transform: translateY(-2px);
+    background: rgba(0, 255, 255, 0.12);
+    border-color: rgba(0, 255, 255, 0.8);
+    box-shadow:
+      0 0 18px rgba(0, 255, 255, 0.45),
+      0 0 36px rgba(32, 178, 170, 0.35);
+  }
+
+  .btn-secondary-glass {
+    color: #e6ecff;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: box-shadow 200ms ease, transform 200ms ease, border-color 200ms ease, background 200ms ease;
+  }
+  .btn-secondary-glass:hover {
+    transform: translateY(-2px);
+    border-color: rgba(0, 255, 255, 0.5);
+    box-shadow:
+      0 0 16px rgba(0, 255, 255, 0.25),
+      0 0 24px rgba(255, 165, 0, 0.2);
+  }
+
+  .text-faint {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .divider-soft {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  }
+}
+
