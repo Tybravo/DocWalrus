@@ -48,7 +48,11 @@
     "esbuild": "^0.25.10",
     "gray-matter": "^4.0.3",
     "react-router-dom": "^7.9.1",
+    "rehype-parse": "^9.0.1",
+    "rehype-remark": "^10.0.1",
     "remark-frontmatter": "^5.0.0",
-    "remark-gfm": "^4.0.1"
+    "remark-gfm": "^4.0.1",
+    "remark-stringify": "^11.0.0",
+    "unified": "^11.0.5"
   }
 }

@@ -1,0 +1,14 @@
+***
+
+## title: "DocWalrus documentation guide" description: "This is an example of DocWalrus documentation step by step guide"
+
+# Hello MDX
+
+Welcome to the Quickstart guide for DocWalrus documentation:
+
+And below is a quick headstart:
+
+```js
+
+console.log("Official link to documentation for DocWalrus");
+```

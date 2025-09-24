@@ -30,21 +30,15 @@ async function compileMDX() {
         format: 'esm',
     })
 
+    //const { default: MDXContent } = await eval(compiledFile.value);
     //const htmlFormat = renderToString(React.createElement(compiledFile));
+    //console.log('Successfully compiled and written to:', outputPath);
 
     const outputPath = './theme/dist/output.html'
     await writeFile(outputPath, code);
 
     console.log(code)
-
-    //const { default: MDXContent } = await eval(compiledFile.value);
-
-    //
-
-    //console.log('Successfully compiled and written to:', outputPath);
 }
-
-
 
 // function evalMdx(code) {
 //     const scope = {React, ...runtime };
