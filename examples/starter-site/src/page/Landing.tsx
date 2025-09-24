@@ -172,7 +172,7 @@ const Landing = () => {
               transition={{ duration: 0.7 }}
               className="text-4xl md:text-6xl font-extrabold leading-tight"
             >
-              Build Documentation That Lives Forever On-Chain
+              Build Blog & Documentation That Lives Forever On-Chain
             </motion.h1>
 
             <motion.p

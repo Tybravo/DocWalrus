@@ -10,7 +10,7 @@ interface DocPageProps {
   config: DocPageConfig;
 }
 
-import { Navbar } from './Navbar';
+import { Navbar } from './components/Navbar';
 
 // Placeholder for DocPage component
 export const DocPage = ({ children, config }: DocPageProps) => {
@@ -18,3 +18,10 @@ export const DocPage = ({ children, config }: DocPageProps) => {
 };
 
 export { Navbar };
+
+
+export * from './components/Navbar';
+export * from './components/Footer';
+export * from './components/Sidebar';
+export * from './components/DocPage';
+export * from './components/Blog';
