@@ -40,6 +40,8 @@
   },
   "dependencies": {
     "@mdx-js/mdx": "^3.1.1",
+    "@mdx-js/react": "^3.1.1",
+    "@mdx-js/rollup": "^3.1.1",
     "@mysten/dapp-kit": "^0.18.0",
     "@mysten/walrus": "^0.7.0",
     "@tanstack/react-query": "^5.90.2",

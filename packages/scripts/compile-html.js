@@ -3,6 +3,7 @@ import { unified } from "unified";
 import rehypeParse from "rehype-parse";
 import rehypeRemark from "rehype-remark";
 import remarkStringify from "remark-stringify";
+import { createWriteStream } from "fs";
 
 const inputPath = './theme/dist/main.html'
 const outputPath = './core/content-file.md'
