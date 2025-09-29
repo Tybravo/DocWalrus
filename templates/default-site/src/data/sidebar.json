@@ -1,0 +1,19 @@
+[
+  {
+    "label": "Mysite",
+    "href": "/mysite"
+  },
+  {
+    "label": "Blog",
+    "items": [
+      {
+        "label": "Index",
+        "href": "/blog"
+      },
+      {
+        "label": "Git Semantic Versioning",
+        "href": "/blog/git-semantic-versioning"
+      }
+    ]
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "outDir": "dist",
+    "declaration": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["./node_modules/@types", "../../node_modules/@types"],
+    "baseUrl": ".",
+    "paths": {
+      "@docwalrus/core/*": ["../core/dist/*"],
+      "@docwalrus/core": ["../core/dist/core"]
+    }
+  },
+  "include": ["*.ts", "commands/*.ts"],
+  "exclude": ["node_modules", "dist"]
+}

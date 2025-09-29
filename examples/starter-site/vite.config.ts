@@ -8,6 +8,16 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@docwalrus/theme': path.resolve(__dirname, '../../packages/theme/src'),
-    },
+    }
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-ui': ['@docwalrus/theme']
+        }
+      }
+    }
+  }
 });

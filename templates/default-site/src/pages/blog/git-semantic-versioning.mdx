@@ -1,0 +1,85 @@
+---
+title: "GIT - Supreme way of semantic versioning"
+date: "2022-07-31"
+author: "Palash Shrivastava"
+tags: ["engineering", "git"]
+---
+
+# GIT - Supreme's way of semantic versioning
+
+Here are some of the GIT hacks everyone should know of:
+
+## 1. GitLens
+
+GitLens is a VSCode extension. It has been a lifesaver for me and my team. It works beautifully with VS Code. I can compare commits, and code from different branches, and check the history of each line of code. An epic tool to add to your code.
+
+## 2. Moving or Migrating stashes from old computer to new:
+
+First, List all your stashes:
+
+```bash
+git stash list
+```
+
+Stashes Export to Patch files. You'll have to specify your stash ID and provide a name for your patch file this for all the stashes you want to move:
+
+```bash
+git stash show -p stash@{0} > patch-file-name-0
+git stash show -p stash@{1} > patch-file-name-1
+```
+
+Patch files will be created in the current directory. Copy the patch files into the new directory on the new machine.
+
+Finally, Apply your stashes and finally Re-Stash them:
+
+```bash
+git apply patch-file-name-0
+git stash
+```
+
+## 3. Delete branch on local and remote
+
+To delete branch on local:
+```bash
+git branch -d local-branch-name
+```
+
+To push branch deletion to remote:
+```bash
+git push origin -d branch-name
+```
+
+## 4. Stage all files and commit in one line
+
+```bash
+git commit -am "Add all and commit"
+```
+
+## 5. Take a fresh pull of an existing branch without resolving merge conflicts
+
+Need to delete your local branch and re-fetch it cleanly from the remote:
+
+### Warning!
+All local changes in that branch. Make sure to back up anything you need to keep.
+
+5 Steps to Take Fresh Pull of an Existing Branch:
+
+1. Switch to another branch (like main or master)
+```bash
+git checkout main
+```
+
+2. Delete the local branch (force delete, since it has conflicts)
+```bash
+git branch -D your-branch-name
+```
+
+3. Fetch the latest branches from remote
+```bash
+git fetch origin
+```
+
+4. Checkout the branch freshly from remote
+```bash
+git checkout -b your-branch-name origin/your-branch-name
+```

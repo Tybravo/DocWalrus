@@ -1,0 +1,31 @@
+{
+  "name": "@docwalrus/core",
+  "version": "1.0.0",
+  "description": "Core functionality for DocWalrus",
+  "main": "dist/core.js",
+  "types": "dist/core.d.ts",
+  "exports": {
+    ".": "./dist/core.js",
+    "./wallet": "./dist/wallet.js"
+  },
+  "typesVersions": {
+    "*": {
+      "*": ["./dist/*"],
+      "wallet": ["./dist/wallet.d.ts"]
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "glob": "^10.3.10",
+    "gray-matter": "^4.0.3",
+    "fs-extra": "^11.2.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "typescript": "^5.9.2"
+  }
+}
