@@ -1,0 +1,27 @@
+{
+  "name": "@docwalrus/adapter-walrus",
+  "version": "1.0.0",
+  "description": "Walrus adapter for DocWalrus",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "documentation",
+    "blockchain",
+    "sui",
+    "walrus"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mysten/sui": "^1.38.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.9.2"
+  }
+}

@@ -76,5 +76,78 @@
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
   }
+
+   /* Code Hike code block styling overrides */
+  /* .ch-codeblock, */
+  /* .ch-code-wrapper, */
+  pre[data-theme],
+  pre.ch-code {
+    border: 2px solid rgba(6, 182, 212, 0.6) !important;
+    box-shadow: 
+      0 0 15px rgba(6, 182, 212, 0.6),
+      0 0 30px rgba(6, 182, 212, 0.4),
+      0 4px 6px -1px rgba(0, 0, 0, 0.2) !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    margin: 1rem 0 !important;
+  }
+
+  .ch-codeblock:hover,
+  .ch-code-wrapper:hover,
+  pre[data-theme]:hover,
+  pre.ch-code:hover {
+    box-shadow: 
+      0 0 20px rgba(6, 182, 212, 0.8),
+      0 0 40px rgba(6, 182, 212, 0.5),
+      0 6px 8px -1px rgba(0, 0, 0, 0.3) !important;
+    border-color: rgba(6, 182, 212, 0.8) !important;
+  }
+
+  /* Light mode adjustments */
+  :not(.dark) .ch-codeblock,
+  :not(.dark) .ch-code-wrapper,
+  :not(.dark) pre[data-theme],
+  :not(.dark) pre.ch-code {
+    border: 1px solid rgba(6, 182, 212, 0.4) !important;
+    box-shadow: 
+      0 0 8px rgba(6, 182, 212, 0.4),
+      0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  }
+
+  :not(.dark) .ch-codeblock:hover,
+  :not(.dark) .ch-code-wrapper:hover,
+  :not(.dark) pre[data-theme]:hover,
+  :not(.dark) pre.ch-code:hover {
+    box-shadow: 
+      0 0 12px rgba(6, 182, 212, 0.6),
+      0 0 24px rgba(6, 182, 212, 0.3),
+      0 6px 8px -1px rgba(0, 0, 0, 0.15) !important;
+    border-color: rgba(6, 182, 212, 0.6) !important;
+  }
+  .ch-code-wrapper,
+  .ch-codeblock {
+    /* Slightly reduced glow and border intensity */
+    border: 1px solid rgba(34, 211, 238, 0.25); /* cyan-400 at 25% */
+    box-shadow: 0 0 8px rgba(34, 211, 238, 0.18), inset 0 0 4px rgba(34, 211, 238, 0.12);
+  }
+  
+  /* Hover state: very slightly stronger, but still reduced vs before */
+  .ch-codeblock:hover {
+    border: 1px solid rgba(34, 211, 238, 0.35); /* cyan-400 @ 35% */
+    box-shadow: 0 0 14px rgba(0, 255, 255, 0.28), inset 0 0 6px rgba(0, 255, 255, 0.14);
+  }
+  
+  /* Light mode adjustments if you have them */
+  :not(.dark) .ch-codeblock {
+    border: 1px solid rgba(14, 116, 144, 0.25);
+    box-shadow: 0 0 6px rgba(14, 116, 144, 0.16), inset 0 0 3px rgba(14, 116, 144, 0.10);
+  }
+  
+  :not(.dark) .ch-codeblock:hover {
+    border-color: rgba(14, 116, 144, 0.32);
+    box-shadow: 0 0 10px rgba(14, 116, 144, 0.24), inset 0 0 5px rgba(14, 116, 144, 0.12);
+  }
 }
+
+
 

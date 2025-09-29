@@ -1,18 +1,60 @@
 export const frontMatter = {
+  title: "Blog",
   posts: [
     {
-      title: 'First Post',
-      date: '2025-09-24'
-    }
-    // Add other posts here
+      title: 'GIT : The Supreme\'s way of semantic versioning',
+      date: '2022-07-31',
+      excerpt: 'Here are some of the GIT hacks everyone should know of',
+      path: '/blog/git-semantic-versioning',
+      author: 'Palash Shrivastava',
+      tags: ['engineering', 'git']
+    },
+    {
+      title: 'Must use Apps for MAC',
+      date: '2022-07-31',
+      excerpt: 'Here are some essential Mac OS apps',
+      path: '/blog/mac-apps',
+      author: 'Engineer',
+      tags: ['engineering']
+    },
+    // Add other sample posts
   ]
 };
 
 export default function BlogIndex() {
   return (
     <>
-      <h1>Blog</h1>
-      <p>This is the blog index page.</p>
+      <h1 className="text-3xl font-bold mb-6">All Blog Posts</h1>
+      <div className="space-y-6">
+        {frontMatter.posts.map((post, index) => (
+          <div key={index} className="border-b pb-4">
+            <h2 className="text-xl font-semibold">
+              <a 
+                href={post.path} 
+                className="hover:opacity-80 transition-opacity"
+                style={{ color: 'rgb(244, 162, 97)' }}
+              >
+                {post.title}
+              </a>
+            </h2>
+            <div className="flex items-center text-sm text-gray-600 mt-1">
+              <span>{post.date}</span>
+              <span className="mx-2">•</span>
+              <span>{post.author}</span>
+            </div>
+            <p className="mt-2">{post.excerpt}</p>
+            {post.tags && (
+              <div className="mt-2 flex gap-2">
+                {post.tags.map((tag, i) => (
+                  <a key={i} href={`/tags/${tag}`} className="text-xs bg-gray-100 px-2 py-1 rounded hover:bg-gray-200">
+                    {tag}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </>
   );
 }
