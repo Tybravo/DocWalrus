@@ -30,5 +30,11 @@ extensions.json
 
 
 # Monorepo workspace and Dependency Management
-pnpm-lock.yaml
+!pnpm-lock.yaml
 pnpm-workspace.yaml
+
+
+# Keep these files
+!packages/
+!examples/
+!templates/
