@@ -372,8 +372,8 @@ const Landing = () => {
             </button>
 
             <div className="hidden md:flex items-center space-x-3">
-              {/* Get Started Button */}
-              <a href="/get-started" className="btn-secondary-glass rounded-xl px-4 py-2 text-sm">Get Started</a>
+              {/* Get Started Button - FIXED: Changed from <a> to <Link> */}
+              <LinkAny to="/get-started" className="btn-secondary-glass rounded-xl px-4 py-2 text-sm">Get Started</LinkAny>
             </div>
           </div>
 
@@ -395,7 +395,8 @@ const Landing = () => {
               <a href="/blog#" className="block text-faint hover:text-white transition-colors">Blog</a>
               <a href="/pricing#" className="block text-faint hover:text-white transition-colors">Pricing</a>
               <a href="/explore#" className="block text-faint hover:text-white transition-colors">Explore</a>
-              <a href="/get-started" className="block btn-secondary-glass rounded-xl px-4 py-2 text-sm text-center mt-4">Get Started</a>
+              {/* FIXED: Changed from <a> to <Link> for mobile menu */}
+              <LinkAny to="/get-started" className="block btn-secondary-glass rounded-xl px-4 py-2 text-sm text-center mt-4">Get Started</LinkAny>
             </motion.div>
           )}
         </div>
@@ -441,12 +442,13 @@ const Landing = () => {
               transition={{ duration: 0.6, delay: 0.25 }}
               className="mt-8 flex flex-wrap gap-4 justify-center"
             >
-              <a
-                href="/get-started"
+              {/* FIXED: Changed from <a> to <Link> */}
+              <LinkAny
+                to="/get-started"
                 className="btn-primary-glow rounded-xl px-6 py-3 text-sm font-semibold"
               >
                 Get Started
-              </a>
+              </LinkAny>
               <a
                 href="#"
                 className="btn-secondary-glass rounded-xl px-6 py-3 text-sm font-semibold"
