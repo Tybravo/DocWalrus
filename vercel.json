@@ -2,6 +2,7 @@
   "version": 2,
   "buildCommand": "pnpm build",
   "installCommand": "pnpm install",
-  "outputDirectory": "examples/starter-site/dist",
+  "outputDirectory": "dist",
+  "rootDirectory": "examples/starter-site",
   "framework": "vite"
 }
