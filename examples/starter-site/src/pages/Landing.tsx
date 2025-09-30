@@ -2,8 +2,6 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Navbar } from '@docwalrus/theme';
 import { Link } from 'react-router-dom';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 const LinkAny = Link as unknown as React.ComponentType<any>;
 
@@ -317,11 +315,93 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen text-white bg-deep-space relative overflow-hidden">
-      {/* Use Header component */}
-      <Header />
+      {/* Custom Header for Landing page only, with Get Started button but without Connect Wallet, Testnet, or Mainnet */}
+      <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-[#0A1A2F]/80 border-b border-cyan-400/20 shadow-[0_0_25px_rgba(0,255,255,0.3)]">
+        <div className="mx-auto max-w-7xl px-4 py-3">
+          <div className="glass-nav rounded-2xl px-4 py-3 flex items-center justify-between shadow-[0_0_15px_rgba(0,255,255,0.4)]">
+            <LinkAny to="/" className="flex items-center space-x-3">
+              <div className="h-8 w-8 rounded-lg bg-cyan-400/20 border border-cyan-300/40 shadow-[0_0_18px_rgba(0,255,255,0.35)]" />
+              <span className="font-semibold tracking-wide">Docwalrus</span>
+            </LinkAny>
+            
+            {/* Desktop Navigation */}
+            <nav className="hidden md:flex items-center space-x-8 text-sm">
+              <div className="relative" ref={docMenuRef}>
+                <button 
+                  onClick={() => setIsDocMenuOpen(!isDocMenuOpen)}
+                  className="text-faint hover:text-white transition-colors hover:-translate-y-0.5 inline-flex items-center"
+                >
+                  Documentation
+                </button>
+                
+                {isDocMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="absolute top-full left-0 mt-2 w-48 glass-nav rounded-xl p-2 shadow-[0_0_15px_rgba(0,255,255,0.4)] border border-cyan-400/20 z-50"
+                  >
+                    <LinkAny to="/installation" className="block px-4 py-2 text-faint hover:text-white hover:bg-cyan-400/10 rounded-lg transition-colors">
+                      Installation
+                    </LinkAny>
+                    <LinkAny to="/configuration" className="block px-4 py-2 text-faint hover:text-white hover:bg-cyan-400/10 rounded-lg transition-colors">
+                      Configuration
+                    </LinkAny>
+                    <LinkAny to="/deployment" className="block px-4 py-2 text-faint hover:text-white hover:bg-cyan-400/10 rounded-lg transition-colors">
+                      Deployment
+                    </LinkAny>
+                    <LinkAny to="/support" className="block px-4 py-2 text-faint hover:text-white hover:bg-cyan-400/10 rounded-lg transition-colors">
+                      Support
+                    </LinkAny>
+                  </motion.div>
+                )}
+              </div>
+              <a href="/blog#" className="text-faint hover:text-white transition-colors hover:-translate-y-0.5 inline-block">Blog</a>
+              <a href="/pricing#" className="text-faint hover:text-white transition-colors hover:-translate-y-0.5 inline-block">Pricing</a>
+              <a href="/explore#" className="text-faint hover:text-white transition-colors hover:-translate-y-0.5 inline-block">Explore</a>
+            </nav>
+
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden flex flex-col space-y-1 p-2"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <span className="w-6 h-0.5 bg-white"></span>
+              <span className="w-6 h-0.5 bg-white"></span>
+              <span className="w-6 h-0.5 bg-white"></span>
+            </button>
+
+            <div className="hidden md:flex items-center space-x-3">
+              {/* Get Started Button */}
+              <a href="/get-started" className="btn-secondary-glass rounded-xl px-4 py-2 text-sm">Get Started</a>
+            </div>
+          </div>
+
+          {/* Mobile Dropdown Menu */}
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="md:hidden mt-4 glass-nav rounded-2xl p-4 space-y-3"
+            >
+              <div className="block text-faint">Documentation</div>
+              <div className="pl-4 space-y-2">
+                <LinkAny to="/installation" className="block text-faint hover:text-white transition-colors">Installation</LinkAny>
+                <LinkAny to="/configuration" className="block text-faint hover:text-white transition-colors">Configuration</LinkAny>
+                <LinkAny to="/deployment" className="block text-faint hover:text-white transition-colors">Deployment</LinkAny>
+                <LinkAny to="/support" className="block text-faint hover:text-white transition-colors">Support</LinkAny>
+              </div>
+              <a href="/blog" className="block text-faint hover:text-white transition-colors">Blog</a>
+              <a href="/pricing" className="block text-faint hover:text-white transition-colors">Pricing</a>
+              <a href="/explore" className="block text-faint hover:text-white transition-colors">Explore</a>
+              <a href="/get-started" className="block btn-secondary-glass rounded-xl px-4 py-2 text-sm text-center mt-4">Get Started</a>
+            </motion.div>
+          )}
+        </div>
+      </header>
       
-      {/* Add padding to prevent content from hiding under the fixed header */}
-      <div className="pt-12"></div>
+      <div className="pt-20"></div>
       
       <section className="relative">
         <div className="absolute inset-0 -z-10">
@@ -333,7 +413,7 @@ const Landing = () => {
           <ParticlesBackground />
         </div>
 
-        <div className="mx-auto max-w-7xl px-4 pt-4 pb-24 flex justify-center">
+        <div className="mx-auto max-w-7xl px-4 pt-20 pb-24 flex justify-center">
           <div className="max-w-3xl text-center">
             {/* Reduced Hero Title Font Size */}
             <motion.h1
