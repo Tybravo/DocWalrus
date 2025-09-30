@@ -25,7 +25,7 @@ export interface WalrusServiceConfig {
 
 // Default Walrus service endpoints (testnet)
 const DEFAULT_WALRUS_CONFIG: WalrusServiceConfig = {
-  publisherUrl: 'https://publisher.walrus-testnet.walrus.space/v1/blobs',
+  publisherUrl: 'https://publisher.walrus-testnet.walrus.space/v1/store',
   aggregatorUrl: 'https://aggregator.walrus-testnet.walrus.space/v1/api',
   epochs: 1,
   deletable: false
@@ -144,9 +144,10 @@ async function uploadFileToWalrus(filePath: string, config: WalrusServiceConfig)
       headers: {
         'Content-Type': 'application/octet-stream',
         'Content-Length': fileContent.length,
-        'X-File-Name': fileName
-        // Note: Walrus testnet service may not require authentication headers
-        // If authentication is required, it should use proper signature mechanism
+        'X-File-Name': fileName,
+        // Add wallet authentication headers for real Walrus service
+        'X-Wallet-Address': config.walletAddress || '',
+        'Authorization': `Bearer ${config.walletKey}`
       }
     }, (res) => {
       let data = '';
