@@ -169,9 +169,9 @@ const Header: React.FC<HeaderProps> = ({ currentPath }) => {
                 <LinkAny to="/deployment" className="block text-faint hover:text-white transition-colors">Deployment</LinkAny>
                 <LinkAny to="/support" className="block text-faint hover:text-white transition-colors">Support</LinkAny>
               </div>
-              <a href="/blog" className="block text-faint hover:text-white transition-colors">Blog</a>
-              <a href="/pricing" className="block text-faint hover:text-white transition-colors">Pricing</a>
-              <a href="/explore" className="block text-faint hover:text-white transition-colors">Explore</a>
+              <a href="/blog#" className="block text-faint hover:text-white transition-colors">Blog</a>
+              <a href="/pricing#" className="block text-faint hover:text-white transition-colors">Pricing</a>
+              <a href="/explore#" className="block text-faint hover:text-white transition-colors">Explore</a>
               
               {/* Mobile Wallet Connection */}
               {currentAccount ? (
