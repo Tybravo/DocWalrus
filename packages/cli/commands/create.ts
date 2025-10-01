@@ -10,7 +10,7 @@ export const createSite = async (siteName: string, template: string = 'standard'
   // Check if wallet is connected
   if (!(await isWalletConnected())) {
     console.error('\x1b[31mError: Wallet not connected. Please connect your SUI wallet first.\x1b[0m');
-    console.log('\x1b[33mVisit https://docwalrus.com/get-started to connect your wallet.\x1b[0m');
+    console.log('\x1b[33mVisit https://docwalrus.vercel.app/get-started to connect your wallet.\x1b[0m');
     process.exit(1);
   }
   
