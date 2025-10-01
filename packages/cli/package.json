@@ -1,6 +1,6 @@
 {
    "name": "@docwalrus/cli",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "DocWalrus CLI",
   "main": "dist/index.js",
   "bin": {
