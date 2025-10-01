@@ -1,11 +1,14 @@
 {
    "name": "@docwalrus/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "DocWalrus CLI",
   "main": "dist/index.js",
   "bin": {
-    "docwalrus": "./dist/cli.js"
+   "docwalrus": "./dist/packages/cli/index.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc && copy package.json dist\\packages\\cli\\",
     "dev": "tsc -w",
