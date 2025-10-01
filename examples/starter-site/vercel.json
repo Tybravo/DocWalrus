@@ -1,7 +1,5 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd examples/starter-site && pnpm install --frozen-lockfile && pnpm run build",
-  "outputDirectory": "examples/starter-site/dist",
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api" },
     { "source": "/(.*)", "destination": "/index.html" }
