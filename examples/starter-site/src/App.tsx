@@ -23,7 +23,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <SuiClientProvider networks={networkConfig} defaultNetwork={defaultNetwork}>
-        <WalletProvider>
+        <WalletProvider autoConnect={true}>
           {/* Use the same workaround as before for RouterProvider */}
           {React.createElement(RouterProvider as any, { router })}
         </WalletProvider>
