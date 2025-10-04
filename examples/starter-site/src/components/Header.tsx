@@ -15,6 +15,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ currentPath }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDocMenuOpen, setIsDocMenuOpen] = useState(false);
+  const [isMobileDocMenuOpen, setIsMobileDocMenuOpen] = useState(false);
   const [network, setNetwork] = useState<'mainnet' | 'testnet'>('testnet');
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   
@@ -36,6 +37,11 @@ const Header: React.FC<HeaderProps> = ({ currentPath }) => {
 
   const currentAccount = useCurrentAccount();
   const { mutate: disconnect } = useDisconnectWallet();
+
+  const handleConnectClick = () => {
+    setIsMobileMenuOpen(false);
+    setIsWalletModalOpen(true);
+  };
 
   return (
     <>
@@ -105,12 +111,14 @@ const Header: React.FC<HeaderProps> = ({ currentPath }) => {
 
             {/* Mobile Menu Button */}
             <button
-              className="md:hidden flex flex-col space-y-1 p-2"
+              className="md:hidden z-50 h-8 w-8 flex items-center justify-center"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              <span className="w-6 h-0.5 bg-white"></span>
-              <span className="w-6 h-0.5 bg-white"></span>
-              <span className="w-6 h-0.5 bg-white"></span>
+              <div className="relative h-4 w-6">
+                <span className={`absolute block h-0.5 w-full transform bg-white transition duration-300 ease-in-out ${isMobileMenuOpen ? 'rotate-45' : '-translate-y-1.5'}`} />
+                <span className={`absolute block h-0.5 w-full bg-white transition-all duration-200 ease-in-out ${isMobileMenuOpen ? 'opacity-0' : 'opacity-100'}`} />
+                <span className={`absolute block h-0.5 w-full transform bg-white transition duration-300 ease-in-out ${isMobileMenuOpen ? '-rotate-45' : 'translate-y-1.5'}`} />
+              </div>
             </button>
 
             <div className="hidden md:flex items-center space-x-3">
@@ -162,12 +170,29 @@ const Header: React.FC<HeaderProps> = ({ currentPath }) => {
               exit={{ opacity: 0, y: -10 }}
               className="md:hidden mt-4 glass-nav rounded-2xl p-4 space-y-3"
             >
-              <div className="block text-faint">Documentation</div>
-              <div className="pl-4 space-y-2">
-                <LinkAny to="/installation" className="block text-faint hover:text-white transition-colors">Installation</LinkAny>
-                <LinkAny to="/configuration" className="block text-faint hover:text-white transition-colors">Configuration</LinkAny>
-                <LinkAny to="/deployment" className="block text-faint hover:text-white transition-colors">Deployment</LinkAny>
-                <LinkAny to="/support" className="block text-faint hover:text-white transition-colors">Support</LinkAny>
+              <div>
+                <button 
+                  onClick={() => setIsMobileDocMenuOpen(!isMobileDocMenuOpen)}
+                  className="flex justify-between items-center w-full text-faint hover:text-white transition-colors"
+                >
+                  <span>Documentation</span>
+                  <svg 
+                    className={`w-4 h-4 ml-1 transition-transform ${isMobileDocMenuOpen ? 'rotate-180' : ''}`} 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {isMobileDocMenuOpen && (
+                  <div className="pl-4 mt-2 space-y-2">
+                    <LinkAny to="/installation" className="block text-faint hover:text-white transition-colors">Installation</LinkAny>
+                    <LinkAny to="/configuration" className="block text-faint hover:text-white transition-colors">Configuration</LinkAny>
+                    <LinkAny to="/deployment" className="block text-faint hover:text-white transition-colors">Deployment</LinkAny>
+                    <LinkAny to="/support" className="block text-faint hover:text-white transition-colors">Support</LinkAny>
+                  </div>
+                )}
               </div>
               <a href="/blog#" className="block text-faint hover:text-white transition-colors">Blog</a>
               <a href="/pricing#" className="block text-faint hover:text-white transition-colors">Pricing</a>
@@ -186,7 +211,7 @@ const Header: React.FC<HeaderProps> = ({ currentPath }) => {
                 </div>
               ) : (
                 <button 
-                  onClick={() => setIsWalletModalOpen(true)}
+                  onClick={handleConnectClick}
                   className="w-full btn-primary-glow rounded-xl px-4 py-2 text-sm text-center mt-4"
                 >
                   Connect Wallet
