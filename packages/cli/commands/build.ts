@@ -26,7 +26,8 @@ export async function buildSite(options: BuildOptions): Promise<void> {
     
     // Create build directory
     const buildDir = path.resolve(process.cwd(), options.out);
-    fs.emptyDirSync(buildDir);
+    execSync(`rimraf ${buildDir}`);
+    fs.mkdirSync(buildDir, { recursive: true });
     
     // Build the site using Vite
     const viteConfigPath = path.resolve(process.cwd(), 'vite.config.ts');

@@ -13,8 +13,8 @@
     "typeRoots": ["./node_modules/@types", "../../node_modules/@types"],
     "baseUrl": ".",
     "paths": {
-      "@docwalrus/core/*": ["../core/dist/*"],
-      "@docwalrus/core": ["../core/dist/core"]
+      "@docwalrus/core/*": ["../core/*"],
+      "@docwalrus/core": ["../core/core"]
     }
   },
   "include": ["*.ts", "commands/*.ts"],

@@ -1,15 +1,25 @@
 {
   "name": "docwalrus",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "DocWalrus - Documentation and blog Framework",
   "main": "index.js",
+  "bin": {
+    "docwalrus": "./packages/cli/dist/index.js"
+  },
   "scripts": {
     "dev": "pnpm -r dev",
     "build": "pnpm -r build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "files": [
+    "packages/cli/dist",
+    "packages/core/dist",
+    "packages/theme/dist",
+    "packages/adapters",
+    "templates"
+  ],
+ "keywords": ["documentation", "static-site", "cli", "walrus"],
+  "author": "Tybravo",
   "license": "ISC",
   "packageManager": "pnpm@10.17.1",
   "workspaces": [
