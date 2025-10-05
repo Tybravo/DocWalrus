@@ -1,38 +1,40 @@
 {
    "name": "@docwalrus/cli",
-  "version": "1.0.0",
-  "description": "DocWalrus CLI",
-  "main": "dist/index.js",
-  "bin": {
-   "docwalrus": "./dist/packages/cli/index.js"
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "tsc && copy package.json dist\\packages\\cli\\",
-    "dev": "tsc -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "@docwalrus/adapter-walrus": "workspace:*",
-    "@docwalrus/core": "workspace:*",
-    "chalk": "^4.1.2",
-    "commander": "^11.1.0",
-    "express": "^4.18.2",
-    "fs-extra": "^11.2.0",
-    "glob": "^10.3.10",
-    "inquirer": "^9.2.12",
-    "ora": "^9.0.0",
-    "update-notifier": "^7.3.1"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/express-serve-static-core": "^4.19.6",
-    "@types/fs-extra": "^11.0.4",
-    "@types/glob": "^8.1.0",
-    "@types/inquirer": "^9.0.7",
-    "@types/update-notifier": "^6.0.8",
-    "typescript": "^5.9.2"
-  }
+   "version": "1.0.3",
+   "description": "DocWalrus CLI",
+   "main": "dist/index.js",
+   "bin": {
+      "docwalrus": "./dist/packages/cli/index.js"
+   },
+   "files": [
+      "dist"
+   ],
+   "scripts": {
+      "prebuild": "rimraf dist",
+      "build": "tsc && copy package.json dist\\packages\\cli\\",
+      "dev": "tsc -w",
+      "test": "echo \"Error: no test specified\" && exit 1"
+   },
+   "dependencies": {
+      "@docwalrus/adapter-walrus": "workspace:*",
+      "@docwalrus/core": "workspace:*",
+      "chalk": "^4.1.2",
+      "commander": "^11.1.0",
+      "express": "^4.18.2",
+      "fs-extra": "^11.2.0",
+      "glob": "^10.3.10",
+      "inquirer": "^9.2.12",
+      "ora": "^9.0.0",
+      "update-notifier": "^7.3.1"
+   },
+   "devDependencies": {
+      "@types/express": "^4.17.21",
+      "@types/express-serve-static-core": "^4.19.6",
+      "@types/fs-extra": "^11.0.4",
+      "@types/glob": "^8.1.0",
+      "@types/inquirer": "^9.0.7",
+      "@types/update-notifier": "^6.0.8",
+      "rimraf": "^5.0.5",
+      "typescript": "^5.9.2"
+   }
 }
