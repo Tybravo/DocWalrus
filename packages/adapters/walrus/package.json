@@ -4,6 +4,9 @@
   "description": "Walrus adapter for DocWalrus",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
