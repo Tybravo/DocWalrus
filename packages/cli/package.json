@@ -17,13 +17,13 @@
    "license": "ISC",
    "scripts": {
       "prebuild": "rimraf dist",
-      "build": "tsc && copy package.json dist\\packages\\cli\\",
+      "build": "tsc && copy package.json dist\\",
       "dev": "tsc -w",
       "test": "echo \"Error: no test specified\" && exit 1"
    },
    "dependencies": {
-      "@docwalrus/adapter-walrus": "workspace:*",
-      "@docwalrus/core": "workspace:*",
+      "@docwalrus/adapter-walrus": "^1.0.0",
+      "@docwalrus/core": "^1.0.0",
       "chalk": "^4.1.2",
       "commander": "^11.1.0",
       "express": "^4.18.2",
