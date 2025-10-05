@@ -12,6 +12,9 @@
    "files": [
       "dist"
    ],
+   "keywords": ["documentation", "static-site", "cli", "walrus"],
+   "author": "Tybravo",
+   "license": "ISC",
    "scripts": {
       "prebuild": "rimraf dist",
       "build": "tsc && copy package.json dist\\packages\\cli\\",
