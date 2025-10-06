@@ -1,11 +1,11 @@
 {
    "name": "@docwalrus/cli",
-   "version": "1.0.2",
+   "version": "1.0.3",
    "description": "DocWalrus - Documentation and blog Framework",
-   "main": "dist/index.js",
-   "bin": {
-      "docwalrus": "./dist/packages/cli/index.js"
-   },
+   "main": "dist/packages/cli/index.js",
+  "bin": {
+    "docwalrus": "./dist/packages/cli/index.js"
+  },
    "publishConfig": {
       "access": "public"
    },
