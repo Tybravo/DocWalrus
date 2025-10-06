@@ -5,7 +5,9 @@ import inquirer from 'inquirer';
 import ora from 'ora';
 import { createRequire } from 'module';
 const cliRequire = createRequire(__filename);
-const { generateVersionedDocs } = cliRequire('@docwalrus/core');
+const corePkgPath = cliRequire.resolve('@docwalrus/core/package.json', { paths: [__dirname] });
+const coreDir = path.dirname(corePkgPath);
+const { generateVersionedDocs } = cliRequire(path.join(coreDir, 'dist', 'core.js'));
 
 interface VersionOptions {
   label?: string;

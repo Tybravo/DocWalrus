@@ -35,6 +35,7 @@ program
   .description('Create a new DocWalrus site')
   .option('-t, --template <template>', 'Template to use (standard, minimal, blog)', 'standard')
   .action(async (name, options) => {
+    const { createSite } = require('./commands/create');
     await createSite(name, options);
   });
 
@@ -45,6 +46,7 @@ program
   .option('-p, --port <port>', 'Port to use', '3000')
   .option('-h, --host <host>', 'Host to use', 'localhost')
   .action(async (options) => {
+    const { startDevServer } = require('./commands/start');
     await startDevServer(options);
   });
 
@@ -55,6 +57,7 @@ program
   .option('-o, --out <dir>', 'Output directory', 'build')
   .option('--minify', 'Minify the output', true)
   .action(async (options) => {
+    const { buildSite } = require('./commands/build');
     await buildSite(options);
   });
 
@@ -69,6 +72,7 @@ program
   .option('--walrus-aggregator <url>', 'Walrus aggregator URL', 'https://aggregator.walrus-testnet.walrus.space/v1/api')
   .option('--epochs <number>', 'Number of storage epochs', '1')
   .action(async (options) => {
+    const { deploySite } = require('./commands/deploy');
     await deploySite({
       ...options,
       epochs: options.epochs ? parseInt(options.epochs) : undefined
@@ -81,6 +85,7 @@ program
   .description('Create a new version of the docs')
   .option('-l, --label <label>', 'Label for the version')
   .action(async (version, options) => {
+    const { versionDocs } = require('./commands/version');
     await versionDocs(version, options);
   });
 
@@ -90,6 +95,7 @@ program
   .description('Create translations for a locale')
   .option('-f, --from <locale>', 'Source locale', 'en')
   .action(async (locale, options) => {
+    const { translateDocs } = require('./commands/i18n');
     await translateDocs(locale, options);
   });
 
@@ -99,6 +105,7 @@ program
   .description('Customize a theme component')
   .option('-e, --eject', 'Fully eject the component', false)
   .action(async (component, options) => {
+    const { swizzleComponent } = require('./commands/swizzle');
     await swizzleComponent(component, options);
   });
 
