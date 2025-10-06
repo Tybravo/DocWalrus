@@ -3,8 +3,9 @@ import path from 'path';
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import ora from 'ora';
-// Fix the import path to use the package name
-import { generateVersionedDocs } from '@docwalrus/core';
+import { createRequire } from 'module';
+const cliRequire = createRequire(__filename);
+const { generateVersionedDocs } = cliRequire('@docwalrus/core');
 
 interface VersionOptions {
   label?: string;
