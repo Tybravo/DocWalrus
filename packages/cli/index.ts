@@ -18,7 +18,7 @@ import { translateDocs } from './commands/i18n';
 import { swizzleComponent } from './commands/swizzle';
 
 // Import package.json
-const pkg = require('./package.json');
+const pkg = require('../../package.json');
 
 // Check for updates
 updateNotifier({ pkg }).notify();
