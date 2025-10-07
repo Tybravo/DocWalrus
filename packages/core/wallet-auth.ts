@@ -1,6 +1,6 @@
 import express from 'express';
 import { Server } from 'http';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import { connectWallet, isWalletConnected } from './wallet';
 
 export interface AuthResult {
@@ -9,27 +9,30 @@ export interface AuthResult {
   error?: string;
 }
 
-// Cross-platform browser opening
+// Improved cross-platform browser opening
 const openBrowser = (url: string): void => {
   const platform = process.platform;
-  let command: string;
-
+  
   switch (platform) {
     case 'win32':
-      command = `start "${url}"`;
+      // Use cmd /c start to properly open browser on Windows
+      spawn('cmd', ['/c', 'start', '', url], {
+        detached: true,
+        stdio: 'ignore'
+      }).unref();
       break;
     case 'darwin':
-      command = `open "${url}"`;
+      spawn('open', [url], {
+        detached: true,
+        stdio: 'ignore'
+      }).unref();
       break;
     default:
-      command = `xdg-open "${url}"`;
+      spawn('xdg-open', [url], {
+        detached: true,
+        stdio: 'ignore'
+      }).unref();
   }
-
-  exec(command, (error) => {
-    if (error) {
-      console.error('Failed to open browser:', error);
-    }
-  });
 };
 
 // Find available port
@@ -77,15 +80,50 @@ export const authenticateWallet = async (): Promise<AuthResult> => {
                 <head>
                   <title>DocWalrus - Wallet Connected</title>
                   <style>
-                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
-                    .success { color: #28a745; font-size: 24px; margin-bottom: 20px; }
-                    .address { background: #e9ecef; padding: 10px; border-radius: 5px; font-family: monospace; }
+                    body { 
+                      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+                      text-align: center; 
+                      padding: 50px; 
+                      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                      color: white;
+                      margin: 0;
+                    }
+                    .container {
+                      background: rgba(255, 255, 255, 0.1);
+                      backdrop-filter: blur(10px);
+                      border-radius: 20px;
+                      padding: 40px;
+                      max-width: 500px;
+                      margin: 0 auto;
+                      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                    }
+                    .success { 
+                      color: #4ade80; 
+                      font-size: 28px; 
+                      margin-bottom: 20px; 
+                      font-weight: bold;
+                    }
+                    .address { 
+                      background: rgba(255, 255, 255, 0.2); 
+                      padding: 15px; 
+                      border-radius: 10px; 
+                      font-family: 'Courier New', monospace; 
+                      word-break: break-all;
+                      margin: 20px 0;
+                    }
+                    .message {
+                      font-size: 16px;
+                      opacity: 0.9;
+                    }
                   </style>
                 </head>
                 <body>
-                  <div class="success">✅ Wallet Connected Successfully!</div>
-                  <p>Address: <span class="address">${address}</span></p>
-                  <p>You can now close this window and return to your terminal.</p>
+                  <div class="container">
+                    <div class="success">✅ Wallet Connected Successfully!</div>
+                    <p class="message">Your SUI wallet has been connected to DocWalrus CLI</p>
+                    <div class="address">${address}</div>
+                    <p class="message">You can now close this window and return to your terminal to continue.</p>
+                  </div>
                 </body>
               </html>
             `);
@@ -93,7 +131,7 @@ export const authenticateWallet = async (): Promise<AuthResult> => {
             // Close server after successful connection
             setTimeout(() => {
               server?.close();
-            }, 2000);
+            }, 3000);
           })
           .catch((error) => {
             authResult = { success: false, error: error.message };
@@ -102,14 +140,32 @@ export const authenticateWallet = async (): Promise<AuthResult> => {
                 <head>
                   <title>DocWalrus - Connection Failed</title>
                   <style>
-                    body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
-                    .error { color: #dc3545; font-size: 24px; margin-bottom: 20px; }
+                    body { 
+                      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+                      text-align: center; 
+                      padding: 50px; 
+                      background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+                      color: white;
+                      margin: 0;
+                    }
+                    .container {
+                      background: rgba(255, 255, 255, 0.1);
+                      backdrop-filter: blur(10px);
+                      border-radius: 20px;
+                      padding: 40px;
+                      max-width: 500px;
+                      margin: 0 auto;
+                      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                    }
+                    .error { color: #fca5a5; font-size: 24px; margin-bottom: 20px; font-weight: bold; }
                   </style>
                 </head>
                 <body>
-                  <div class="error">❌ Connection Failed</div>
-                  <p>Error: ${error.message}</p>
-                  <p>Please try again or connect manually.</p>
+                  <div class="container">
+                    <div class="error">❌ Connection Failed</div>
+                    <p>Error: ${error.message}</p>
+                    <p>Please try again or connect manually.</p>
+                  </div>
                 </body>
               </html>
             `);
@@ -121,14 +177,32 @@ export const authenticateWallet = async (): Promise<AuthResult> => {
             <head>
               <title>DocWalrus - Invalid Request</title>
               <style>
-                body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
-                .error { color: #dc3545; font-size: 24px; margin-bottom: 20px; }
+                body { 
+                  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+                  text-align: center; 
+                  padding: 50px; 
+                  background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);
+                  color: white;
+                  margin: 0;
+                }
+                .container {
+                  background: rgba(255, 255, 255, 0.1);
+                  backdrop-filter: blur(10px);
+                  border-radius: 20px;
+                  padding: 40px;
+                  max-width: 500px;
+                  margin: 0 auto;
+                  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+                }
+                .error { color: #ffcc80; font-size: 24px; margin-bottom: 20px; font-weight: bold; }
               </style>
             </head>
             <body>
-              <div class="error">❌ Invalid Request</div>
-              <p>No wallet address provided in the callback.</p>
-              <p>Please try connecting again from the DocWalrus website.</p>
+              <div class="container">
+                <div class="error">⚠️ Invalid Request</div>
+                <p>No wallet address provided in the callback.</p>
+                <p>Please try connecting again from the DocWalrus website.</p>
+              </div>
             </body>
           </html>
         `);
@@ -139,14 +213,17 @@ export const authenticateWallet = async (): Promise<AuthResult> => {
     server = app.listen(port, () => {
       console.log(`📡 Callback server started on port ${port}`);
       
-      // Construct the DocWalrus URL with callback parameter
+      // Construct the DocWalrus URL with callback parameter and auto-connect flag
       const callbackUrl = `http://localhost:${port}/auth/callback`;
-      const docwalrusUrl = `https://docwalrus.vercel.app/get-started?callback=${encodeURIComponent(callbackUrl)}`;
+      const docwalrusUrl = `https://docwalrus.vercel.app/get-started?callback=${encodeURIComponent(callbackUrl)}&autoConnect=true`;
       
       console.log(`🌐 Opening: ${docwalrusUrl}`);
+      console.log('💡 If the browser doesn\'t open automatically, copy and paste the URL above');
       
-      // Open browser to DocWalrus website
-      openBrowser(docwalrusUrl);
+      // Add a small delay to ensure server is fully ready
+      setTimeout(() => {
+        openBrowser(docwalrusUrl);
+      }, 500);
     });
 
     // Wait for authentication or timeout
