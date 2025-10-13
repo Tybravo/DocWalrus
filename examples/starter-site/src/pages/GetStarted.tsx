@@ -221,124 +221,234 @@ const WebGLBackground: React.FC = () => {
 
 const GetStarted = () => {
   const navigate = useNavigate();
+  const currentAccount = useCurrentAccount();
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+  const [callbackUrl, setCallbackUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Check URL parameters for CLI authentication flow
+    const urlParams = new URLSearchParams(window.location.search);
+    const autoConnect = urlParams.get('autoConnect');
+    const callback = urlParams.get('callback');
+
+    if (callback) {
+      setCallbackUrl(callback);
+    }
+
+    if (autoConnect === 'true') {
+      // Automatically open wallet modal for CLI authentication
+      setIsWalletModalOpen(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Handle wallet connection callback for CLI
+    if (currentAccount && callbackUrl) {
+      const handleCallback = async () => {
+        try {
+          // Send wallet address to CLI callback URL
+          const response = await fetch(callbackUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              address: currentAccount.address,
+              success: true,
+            }),
+          });
+
+          if (response.ok) {
+            // Show success message and close modal
+            setIsWalletModalOpen(false);
+            
+            // Optional: Show a success notification
+            const successDiv = document.createElement('div');
+            successDiv.innerHTML = `
+              <div style="
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 255, 255, 0.1);
+                border: 1px solid rgba(0, 255, 255, 0.3);
+                border-radius: 12px;
+                padding: 20px;
+                color: white;
+                text-align: center;
+                z-index: 9999;
+                backdrop-filter: blur(10px);
+              ">
+                <h3 style="margin: 0 0 10px 0; color: rgb(0, 255, 255);">✅ Wallet Connected!</h3>
+                <p style="margin: 0; color: rgba(255, 255, 255, 0.8);">You can now close this tab and return to your terminal.</p>
+              </div>
+            `;
+            document.body.appendChild(successDiv);
+
+            // Auto-remove success message after 5 seconds
+            setTimeout(() => {
+              if (document.body.contains(successDiv)) {
+                document.body.removeChild(successDiv);
+              }
+            }, 5000);
+
+            // Clear URL parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }
+        } catch (error) {
+          console.error('Failed to send callback:', error);
+          
+          // Send error callback
+          try {
+            await fetch(callbackUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                success: false,
+                error: 'Failed to authenticate wallet',
+              }),
+            });
+          } catch (callbackError) {
+            console.error('Failed to send error callback:', callbackError);
+          }
+        }
+      };
+
+      handleCallback();
+    }
+  }, [currentAccount, callbackUrl]);
 
   return (
-    <section className="relative">
-      <div className="absolute inset-0 -z-10">
-        <WebGLBackground />
-      </div>
+    <>
+      {/* Wallet Modal for CLI Authentication */}
+      <AnimatePresence>
+        {isWalletModalOpen && (
+          <WalletModal 
+            isOpen={isWalletModalOpen} 
+            onClose={() => setIsWalletModalOpen(false)} 
+          />
+        )}
+      </AnimatePresence>
 
-      <div className="mx-auto max-w-7xl px-4 py-16">
-        <div className="max-w-3xl mx-auto text-center mb-12">
-          <motion.h1
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="text-3xl md:text-5xl font-extrabold leading-tight"
-            style={{ color: 'rgb(244, 162, 97)' }}
-          >
-            Getting Started
-          </motion.h1>
-          
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.15 }}
-            className="mt-5 text-lg md:text-xl text-faint"
-          >
-            Everything you need to build and deploy your documentation on Docwalrus
-          </motion.p>
+      <section className="relative">
+        <div className="absolute inset-0 -z-10">
+          <WebGLBackground />
         </div>
 
-        {/* 2x2 Grid of Cards */}
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={{
-            hidden: { opacity: 0 },
-            visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
-          }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
-        >
-          {/* Installation Card */}
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            whileHover={{ y: -6, scale: 1.02 }}
-            className="glass rounded-2xl p-6 hover-glow-cyan-orange transition-all duration-300 cursor-pointer"
-            onClick={() => navigate('/installation')}
-          >
-            <div className="flex flex-col items-center text-center">
-              <InstallationIcon />
-              <h3 className="mt-4 text-xl font-semibold" style={{ color: 'rgb(244, 162, 97)' }}>Installation</h3>
-              <p className="mt-2 text-sm text-faint">
-                Quick start guide to install and set up Docwalrus for your project
-              </p>
-            </div>
-          </motion.div>
+        <div className="mx-auto max-w-7xl px-4 py-16">
+          <div className="max-w-3xl mx-auto text-center mb-12">
+            <motion.h1
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7 }}
+              className="text-3xl md:text-5xl font-extrabold leading-tight"
+              style={{ color: 'rgb(244, 162, 97)' }}
+            >
+              Getting Started
+            </motion.h1>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.15 }}
+              className="mt-5 text-lg md:text-xl text-faint"
+            >
+              Everything you need to build and deploy your documentation on Docwalrus
+            </motion.p>
+          </div>
 
-          {/* Configuration Card */}
+          {/* 2x2 Grid of Cards */}
           <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
             variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 },
+              hidden: { opacity: 0 },
+              visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
             }}
-            whileHover={{ y: -6, scale: 1.02 }}
-            className="glass rounded-2xl p-6 hover-glow-cyan-orange transition-all duration-300 cursor-pointer"
-            onClick={() => navigate('/configuration')}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
           >
-            <div className="flex flex-col items-center text-center">
-              <ConfigurationIcon />
-              <h3 className="mt-4 text-xl font-semibold" style={{ color: 'rgb(244, 162, 97)' }}>Configuration</h3>
-              <p className="mt-2 text-sm text-faint">
-                Learn how to customize and configure your documentation site
-              </p>
-            </div>
-          </motion.div>
+            {/* Installation Card */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              className="glass rounded-2xl p-6 hover-glow-cyan-orange transition-all duration-300 cursor-pointer"
+              onClick={() => navigate('/installation')}
+            >
+              <div className="flex flex-col items-center text-center">
+                <InstallationIcon />
+                <h3 className="mt-4 text-xl font-semibold" style={{ color: 'rgb(244, 162, 97)' }}>Installation</h3>
+                <p className="mt-2 text-sm text-faint">
+                  Quick start guide to install and set up Docwalrus for your project
+                </p>
+              </div>
+            </motion.div>
 
-          {/* Deployment Card (replacing Knowledge Base Card) */}
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            whileHover={{ y: -6, scale: 1.02 }}
-            className="glass rounded-2xl p-6 hover-glow-cyan-orange transition-all duration-300 cursor-pointer"
-            onClick={() => navigate('/deployment')}
-          >
-            <div className="flex flex-col items-center text-center">
-              <DeploymentIcon />
-              <h3 className="mt-4 text-xl font-semibold" style={{ color: 'rgb(244, 162, 97)' }}>Deployment</h3>
-              <p className="mt-2 text-sm text-faint">
-                Deploy your documentation site to Walrus storage on SUI blockchain
-              </p>
-            </div>
-          </motion.div>
+            {/* Configuration Card */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              className="glass rounded-2xl p-6 hover-glow-cyan-orange transition-all duration-300 cursor-pointer"
+              onClick={() => navigate('/configuration')}
+            >
+              <div className="flex flex-col items-center text-center">
+                <ConfigurationIcon />
+                <h3 className="mt-4 text-xl font-semibold" style={{ color: 'rgb(244, 162, 97)' }}>Configuration</h3>
+                <p className="mt-2 text-sm text-faint">
+                  Learn how to customize and configure your documentation site
+                </p>
+              </div>
+            </motion.div>
 
-          {/* Support Card */}
-          <motion.div
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            whileHover={{ y: -6, scale: 1.02 }}
-            className="glass rounded-2xl p-6 hover-glow-cyan-orange transition-all duration-300 cursor-pointer"
-            onClick={() => navigate('/support')}
-          >
-            <div className="flex flex-col items-center text-center">
-              <SupportIcon />
-              <h3 className="mt-4 text-xl font-semibold" style={{ color: 'rgb(244, 162, 97)' }}>Support</h3>
-              <p className="mt-2 text-sm text-faint">
-                Get help from our community and support team
-              </p>
-            </div>
+            {/* Deployment Card (replacing Knowledge Base Card) */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              className="glass rounded-2xl p-6 hover-glow-cyan-orange transition-all duration-300 cursor-pointer"
+              onClick={() => navigate('/deployment')}
+            >
+              <div className="flex flex-col items-center text-center">
+                <DeploymentIcon />
+                <h3 className="mt-4 text-xl font-semibold" style={{ color: 'rgb(244, 162, 97)' }}>Deployment</h3>
+                <p className="mt-2 text-sm text-faint">
+                  Deploy your documentation site to Walrus storage on SUI blockchain
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Support Card */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 },
+              }}
+              whileHover={{ y: -6, scale: 1.02 }}
+              className="glass rounded-2xl p-6 hover-glow-cyan-orange transition-all duration-300 cursor-pointer"
+              onClick={() => navigate('/support')}
+            >
+              <div className="flex flex-col items-center text-center">
+                <SupportIcon />
+                <h3 className="mt-4 text-xl font-semibold" style={{ color: 'rgb(244, 162, 97)' }}>Support</h3>
+                <p className="mt-2 text-sm text-faint">
+                  Get help from our community and support team
+                </p>
+              </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   );
 };
 
