@@ -58,9 +58,26 @@ export const createSite = async (siteName: string, template: string = 'default-s
       fs.mkdirSync(siteName, { recursive: true });
     }
     
-    // Copy template files
-    const templatePath = path.resolve(__dirname, '../../../templates', template);
-    if (!fs.existsSync(templatePath)) {
+    // Try multiple possible template paths
+    const possibleTemplatePaths = [
+      path.resolve(__dirname, '../../../templates', template),
+      path.resolve(process.cwd(), 'templates', template),
+      path.resolve(process.cwd(), '../templates', template)
+    ];
+    
+    let templatePath = '';
+    for (const potentialPath of possibleTemplatePaths) {
+      if (fs.existsSync(potentialPath)) {
+        templatePath = potentialPath;
+        break;
+      }
+    }
+    
+    if (!templatePath) {
+      // Debug info to help locate templates
+      console.log(chalk.yellow('Debug - Searched template paths:'));
+      possibleTemplatePaths.forEach(p => console.log(chalk.gray(`- ${p} (exists: ${fs.existsSync(p)})`)));
+      
       spinner.fail(chalk.red(`Template "${template}" not found.`));
       console.log(chalk.yellow('Available templates: default-site'));
       process.exit(1);
