@@ -9,30 +9,63 @@ export interface AuthResult {
   error?: string;
 }
 
-// Improved cross-platform browser opening
-const openBrowser = (url: string): void => {
-  const platform = process.platform;
-  
-  switch (platform) {
-    case 'win32':
-      // Use cmd /c start to properly open browser on Windows
-      spawn('cmd', ['/c', 'start', '', url], {
-        detached: true,
-        stdio: 'ignore'
-      }).unref();
-      break;
-    case 'darwin':
-      spawn('open', [url], {
-        detached: true,
-        stdio: 'ignore'
-      }).unref();
-      break;
-    default:
-      spawn('xdg-open', [url], {
-        detached: true,
-        stdio: 'ignore'
-      }).unref();
-  }
+// More robust cross-platform browser opening
+const openBrowser = async (url: string): Promise<boolean> => {
+  return new Promise((resolve) => {
+    const platform = process.platform;
+    let command: string;
+    let args: string[] = [];
+    
+    switch (platform) {
+      case 'win32':
+        // Try multiple methods for Windows
+        command = 'rundll32';
+        args = ['url.dll,FileProtocolHandler', url];
+        break;
+      case 'darwin':
+        command = 'open';
+        args = [url];
+        break;
+      default:
+        command = 'xdg-open';
+        args = [url];
+    }
+
+    const child = spawn(command, args, {
+      detached: true,
+      stdio: 'ignore'
+    });
+
+    child.on('error', (error) => {
+      console.log(`Primary method failed, trying alternative...`);
+      
+      // Fallback methods
+      if (platform === 'win32') {
+        // Alternative Windows method
+        exec(`start "" "${url}"`, { windowsHide: true }, (error) => {
+          if (error) {
+            console.log(`Alternative method also failed. Please open manually: ${url}`);
+            resolve(false);
+          } else {
+            resolve(true);
+          }
+        });
+      } else {
+        console.log(`Failed to open browser. Please open manually: ${url}`);
+        resolve(false);
+      }
+    });
+
+    child.on('spawn', () => {
+      child.unref();
+      resolve(true);
+    });
+
+    // Timeout after 3 seconds
+    setTimeout(() => {
+      resolve(false);
+    }, 3000);
+  });
 };
 
 // Find available port
@@ -79,14 +112,20 @@ export const authenticateWallet = async (): Promise<AuthResult> => {
               <html>
                 <head>
                   <title>DocWalrus - Wallet Connected</title>
+                  <meta charset="utf-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1">
                   <style>
                     body { 
                       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
                       text-align: center; 
-                      padding: 50px; 
+                      padding: 20px; 
                       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                       color: white;
                       margin: 0;
+                      min-height: 100vh;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
                     }
                     .container {
                       background: rgba(255, 255, 255, 0.1);
@@ -110,10 +149,25 @@ export const authenticateWallet = async (): Promise<AuthResult> => {
                       font-family: 'Courier New', monospace; 
                       word-break: break-all;
                       margin: 20px 0;
+                      font-size: 14px;
                     }
                     .message {
                       font-size: 16px;
                       opacity: 0.9;
+                      line-height: 1.5;
+                    }
+                    .close-btn {
+                      background: rgba(255, 255, 255, 0.2);
+                      border: none;
+                      color: white;
+                      padding: 10px 20px;
+                      border-radius: 8px;
+                      cursor: pointer;
+                      margin-top: 20px;
+                      font-size: 14px;
+                    }
+                    .close-btn:hover {
+                      background: rgba(255, 255, 255, 0.3);
                     }
                   </style>
                 </head>
@@ -123,7 +177,14 @@ export const authenticateWallet = async (): Promise<AuthResult> => {
                     <p class="message">Your SUI wallet has been connected to DocWalrus CLI</p>
                     <div class="address">${address}</div>
                     <p class="message">You can now close this window and return to your terminal to continue.</p>
+                    <button class="close-btn" onclick="window.close()">Close Window</button>
                   </div>
+                  <script>
+                    // Auto-close after 5 seconds
+                    setTimeout(() => {
+                      window.close();
+                    }, 5000);
+                  </script>
                 </body>
               </html>
             `);
@@ -131,7 +192,7 @@ export const authenticateWallet = async (): Promise<AuthResult> => {
             // Close server after successful connection
             setTimeout(() => {
               server?.close();
-            }, 3000);
+            }, 6000);
           })
           .catch((error) => {
             authResult = { success: false, error: error.message };
@@ -139,14 +200,20 @@ export const authenticateWallet = async (): Promise<AuthResult> => {
               <html>
                 <head>
                   <title>DocWalrus - Connection Failed</title>
+                  <meta charset="utf-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1">
                   <style>
                     body { 
                       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
                       text-align: center; 
-                      padding: 50px; 
+                      padding: 20px; 
                       background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
                       color: white;
                       margin: 0;
+                      min-height: 100vh;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
                     }
                     .container {
                       background: rgba(255, 255, 255, 0.1);
@@ -176,14 +243,20 @@ export const authenticateWallet = async (): Promise<AuthResult> => {
           <html>
             <head>
               <title>DocWalrus - Invalid Request</title>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
               <style>
                 body { 
                   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
                   text-align: center; 
-                  padding: 50px; 
+                  padding: 20px; 
                   background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);
                   color: white;
                   margin: 0;
+                  min-height: 100vh;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
                 }
                 .container {
                   background: rgba(255, 255, 255, 0.1);
@@ -210,7 +283,7 @@ export const authenticateWallet = async (): Promise<AuthResult> => {
     });
 
     // Start server
-    server = app.listen(port, () => {
+    server = app.listen(port, async () => {
       console.log(`📡 Callback server started on port ${port}`);
       
       // Construct the DocWalrus URL with callback parameter and auto-connect flag
@@ -218,30 +291,35 @@ export const authenticateWallet = async (): Promise<AuthResult> => {
       const docwalrusUrl = `https://docwalrus.vercel.app/get-started?callback=${encodeURIComponent(callbackUrl)}&autoConnect=true`;
       
       console.log(`🌐 Opening: ${docwalrusUrl}`);
-      console.log('💡 If the browser doesn\'t open automatically, copy and paste the URL above');
       
-      // Add a small delay to ensure server is fully ready
-      setTimeout(() => {
-        openBrowser(docwalrusUrl);
-      }, 500);
+      // Try to open browser
+      const browserOpened = await openBrowser(docwalrusUrl);
+      
+      if (!browserOpened) {
+        console.log('💡 Browser failed to open automatically. Please copy and paste the URL above into your browser.');
+      } else {
+        console.log('✅ Browser opened successfully. Please complete the wallet connection in your browser.');
+      }
     });
 
-    // Wait for authentication or timeout
+    // Wait for authentication or timeout with longer timeout
     return new Promise((resolve) => {
       const timeout = setTimeout(() => {
         server?.close();
         resolve({ 
           success: false, 
-          error: 'Authentication timeout. Please try connecting manually.' 
+          error: 'Authentication timeout (10 minutes). Please try connecting manually or check if the browser opened correctly.' 
         });
-      }, 300000); // 5 minute timeout
+      }, 600000); // 10 minute timeout instead of 5
 
       // Check for successful authentication periodically
       const checkAuth = setInterval(() => {
         if (authResult.success || authResult.error) {
           clearTimeout(timeout);
           clearInterval(checkAuth);
-          server?.close();
+          setTimeout(() => {
+            server?.close();
+          }, 1000);
           resolve(authResult);
         }
       }, 1000);

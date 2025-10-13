@@ -9,8 +9,8 @@ import { isWalletConnected } from '../../core/wallet';
 import { authenticateWallet } from '../../core/wallet-auth';
 
 // Create site command
-export const createSite = async (siteName: string, template: string = 'standard'): Promise<void> => {
-  console.log(chalk.blue(`Creating new DocWalrus site: ${siteName} with template: ${template}`));
+export const createSite = async (siteName: string, template: string = 'default-site'): Promise<void> => {
+  console.log(chalk.blue(`🚀 Creating new DocWalrus site: ${siteName} with template: ${template}`));
   
   // Check if wallet is connected
   const walletConnected = await isWalletConnected();
@@ -62,13 +62,14 @@ export const createSite = async (siteName: string, template: string = 'standard'
     const templatePath = path.resolve(__dirname, '../../../templates', template);
     if (!fs.existsSync(templatePath)) {
       spinner.fail(chalk.red(`Template "${template}" not found.`));
+      console.log(chalk.yellow('Available templates: default-site'));
       process.exit(1);
     }
     
     // Copy template files to destination (Windows-compatible)
     const isWindows = process.platform === 'win32';
     const copyCommand = isWindows 
-      ? `xcopy "${templatePath}" "${siteName}" /E /I /H /Y`
+      ? `xcopy "${templatePath}\\*" "${siteName}\\" /E /I /H /Y /Q`
       : `cp -r "${templatePath}"/* "${siteName}"/`;
     
     execSync(copyCommand, { stdio: 'pipe' });
