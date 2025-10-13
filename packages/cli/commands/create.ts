@@ -87,7 +87,49 @@ export const createSite = async (siteName: string, template: string = 'default-s
       ? `xcopy "${templatePath}\\*" "${siteName}\\" /E /I /H /Y /Q`
       : `cp -r "${templatePath}"/* "${siteName}"/`;
     
-    execSync(copyCommand, { stdio: 'pipe' });
+    // Replace the xcopy command with a JavaScript-based file copy function
+    const copyDir = (src: string, dest: string) => {
+      // Create destination directory
+      if (!fs.existsSync(dest)) {
+        fs.mkdirSync(dest, { recursive: true });
+      }
+      
+      // Read source directory
+      const entries = fs.readdirSync(src, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        const srcPath = path.join(src, entry.name);
+        const destPath = path.join(dest, entry.name);
+        
+        // Skip node_modules and .git directories
+        if (entry.name === 'node_modules' || entry.name === '.git') {
+          continue;
+        }
+        
+        if (entry.isDirectory()) {
+          // Recursively copy directory
+          copyDir(srcPath, destPath);
+        } else {
+          // Copy file with retry logic
+          let retries = 3;
+          while (retries > 0) {
+            try {
+              fs.copyFileSync(srcPath, destPath);
+              break;
+            } catch (err) {
+              retries--;
+              if (retries === 0) throw err;
+              // Wait a bit before retrying
+              console.log(`Retrying copy of ${entry.name}...`);
+              execSync('timeout /t 1', { stdio: 'ignore' });
+            }
+          }
+        }
+      }
+    };
+    
+    // Then replace the xcopy command with:
+    copyDir(templatePath, siteName);
     
     spinner.text = 'Installing dependencies...';
     
