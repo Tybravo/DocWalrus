@@ -36,7 +36,7 @@ program
   .option('-t, --template <template>', 'Template to use (standard, minimal, blog)', 'standard')
   .action(async (name, options) => {
     const { createSite } = require('./commands/create');
-    await createSite(name, options);
+    await createSite(name, options.template || 'standard');
   });
 
 // Start command
