@@ -58,26 +58,24 @@ export const createSite = async (siteName: string, template: string = 'default-s
       fs.mkdirSync(siteName, { recursive: true });
     }
     
-    // Try multiple possible template paths
-    const possibleTemplatePaths = [
-      path.resolve(__dirname, '../../../templates', template),
-      path.resolve(process.cwd(), 'templates', template),
-      path.resolve(process.cwd(), '../templates', template)
-    ];
-    
-    let templatePath = '';
-    for (const potentialPath of possibleTemplatePaths) {
-      if (fs.existsSync(potentialPath)) {
-        templatePath = potentialPath;
-        break;
+    // Find project root by looking for package.json
+    function findProjectRoot(startPath: string): string {
+      let currentPath = startPath;
+      while (currentPath !== path.parse(currentPath).root) {
+        if (fs.existsSync(path.join(currentPath, 'package.json')) && 
+            fs.existsSync(path.join(currentPath, 'templates'))) {
+          return currentPath;
+        }
+        currentPath = path.dirname(currentPath);
       }
+      return startPath; // Fallback to starting path if not found
     }
     
-    if (!templatePath) {
-      // Debug info to help locate templates
-      console.log(chalk.yellow('Debug - Searched template paths:'));
-      possibleTemplatePaths.forEach(p => console.log(chalk.gray(`- ${p} (exists: ${fs.existsSync(p)})`)));
-      
+    // Get project root
+    const projectRoot = findProjectRoot(__dirname);
+    const templatePath = path.join(projectRoot, 'templates', template);
+    
+    if (!fs.existsSync(templatePath)) {
       spinner.fail(chalk.red(`Template "${template}" not found.`));
       console.log(chalk.yellow('Available templates: default-site'));
       process.exit(1);
