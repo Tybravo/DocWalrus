@@ -246,16 +246,12 @@ const GetStarted = () => {
     if (currentAccount && callbackUrl) {
       const handleCallback = async () => {
         try {
-          // Send wallet address to CLI callback URL
-          const response = await fetch(callbackUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              address: currentAccount.address,
-              success: true,
-            }),
+          // Send wallet address to CLI callback URL using GET request with query parameters
+          // This matches what the CLI expects: /auth/callback?address=...&network=...
+          const callbackUrlWithParams = `${callbackUrl}?address=${encodeURIComponent(currentAccount.address)}&network=testnet`;
+          
+          const response = await fetch(callbackUrlWithParams, {
+            method: 'GET',
           });
 
           if (response.ok) {
@@ -298,17 +294,11 @@ const GetStarted = () => {
         } catch (error) {
           console.error('Failed to send callback:', error);
           
-          // Send error callback
+          // Send error callback - also using GET request format
           try {
-            await fetch(callbackUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                success: false,
-                error: 'Failed to authenticate wallet',
-              }),
+            const errorCallbackUrl = `${callbackUrl}?error=${encodeURIComponent('Failed to authenticate wallet')}`;
+            await fetch(errorCallbackUrl, {
+              method: 'GET',
             });
           } catch (callbackError) {
             console.error('Failed to send error callback:', callbackError);
