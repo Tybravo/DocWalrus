@@ -78,33 +78,51 @@ const DocLayout: React.FC<DocLayoutProps> = ({ children, frontMatter, currentPat
   return (
     <MDXProvider components={MDXComponents}>
       <div className={`docwalrus-layout min-h-screen flex flex-col ${darkMode ? 'dark' : ''}`}>
-        <header className="text-white p-4 w-full" style={{ background: 'rgba(244, 162, 97, 1)' }}>
+        <header className={`p-4 w-full transition-colors duration-200 ${
+          darkMode ? 'header-dark text-white' : 'header-light text-slate-800'
+        }`}>
           <div className="container mx-auto px-4">
-            {/* Logo and mobile menu button in one row - centered on mobile */}
             <div className="flex md:justify-between justify-center items-center">
               <div className="flex items-center">
                 <button 
-                  className="mr-4 lg:hidden"
+                  className={`mr-4 lg:hidden ${darkMode ? 'text-white' : 'text-slate-800'}`}
                   onClick={toggleSidebar}
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
                   </svg>
                 </button>
-                <h1 className="text-xl font-bold">{frontMatter?.title || 'DocWalrus'}</h1>
+                <h1 className={`text-2xl font-bold ${darkMode ? 'text-white' : 'text-slate-800'}`}>
+                  {frontMatter?.title || 'DocWalrus'}
+                </h1>
               </div>
               
               {/* Desktop navigation */}
               <nav className="hidden md:flex items-center">
-                <ul className="flex space-x-4 mr-4">
-                  <li><a href="#/" className="text-white hover:opacity-80 transition-opacity">Home</a></li>
-                  <li><a href="#/blog" className="text-white hover:opacity-80 transition-opacity">Blog</a></li>
-                  <li><a href="#/docs" className="text-white hover:opacity-80 transition-opacity">Docs</a></li>
+                <ul className="flex space-x-6 mr-6">
+                  <li>
+                    <a href="#/" className={darkMode ? 'nav-link-dark' : 'nav-link-light'}>
+                      Home
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#/blog" className={darkMode ? 'nav-link-dark' : 'nav-link-light'}>
+                      Blog
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#/docs" className={darkMode ? 'nav-link-dark' : 'nav-link-light'}>
+                      Docs
+                    </a>
+                  </li>
                 </ul>
-                {/* Theme Toggle Button */}
                 <button 
                   onClick={toggleDarkMode} 
-                  className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+                  className={`p-2 rounded-full transition-colors ${
+                    darkMode 
+                      ? 'bg-white/10 hover:bg-white/20' 
+                      : 'bg-slate-200 hover:bg-slate-300'
+                  }`}
                   aria-label="Toggle dark mode"
                 >
                   {darkMode ? (
@@ -120,17 +138,32 @@ const DocLayout: React.FC<DocLayoutProps> = ({ children, frontMatter, currentPat
               </nav>
             </div>
             
-            {/* Mobile navigation - appears below logo and centered */}
+            {/* Mobile navigation */}
             <nav className="md:hidden mt-3 flex flex-col items-center">
-              <ul className="flex justify-center items-center space-x-4 mb-2">
-                <li><a href="#/" className="text-white hover:opacity-80 transition-opacity" onClick={() => setIsSidebarOpen(false)}>Home</a></li>
-                <li><a href="#/blog" className="text-white hover:opacity-80 transition-opacity" onClick={() => setIsSidebarOpen(false)}>Blog</a></li>
-                <li><a href="#/docs" className="text-white hover:opacity-80 transition-opacity" onClick={() => setIsSidebarOpen(false)}>Docs</a></li>
-                {/* Theme Toggle Button - now next to Docs */}
+              <ul className="flex justify-center items-center space-x-6 mb-2">
+                <li>
+                  <a href="#/" className={darkMode ? 'nav-link-dark' : 'nav-link-light'}>
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a href="#/blog" className={darkMode ? 'nav-link-dark' : 'nav-link-light'}>
+                    Blog
+                  </a>
+                </li>
+                <li>
+                  <a href="#/docs" className={darkMode ? 'nav-link-dark' : 'nav-link-light'}>
+                    Docs
+                  </a>
+                </li>
                 <li>
                   <button 
                     onClick={toggleDarkMode} 
-                    className="p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors ml-2"
+                    className={`p-2 rounded-full transition-colors ${
+                      darkMode 
+                        ? 'bg-white/10 hover:bg-white/20' 
+                        : 'bg-slate-200 hover:bg-slate-300'
+                    }`}
                     aria-label="Toggle dark mode"
                   >
                     {darkMode ? (
@@ -185,7 +218,9 @@ const DocLayout: React.FC<DocLayoutProps> = ({ children, frontMatter, currentPat
         </div>
         
         {/* Update the footer styling */}
-        <footer className="p-4 text-center text-white w-full" style={{ background: 'rgba(244, 162, 97, 1)' }}>
+        <footer className={`p-4 text-center w-full transition-colors duration-200 ${
+          darkMode ? 'footer-dark text-white' : 'footer-light text-slate-800'
+        }`}>
           <p>© {new Date().getFullYear()} - Built with DocWalrus</p>
         </footer>
       </div>
