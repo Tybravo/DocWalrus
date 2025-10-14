@@ -58,49 +58,55 @@ export const createSite = async (siteName: string, template: string = 'default-s
       fs.mkdirSync(siteName, { recursive: true });
     }
     
-    // Find project root by looking for package.json - Updated logic
-    function findProjectRoot(): string {
-      // Start from the CLI package directory and go up to find the monorepo root
-      let currentPath = path.resolve(__dirname, '../../..');
+    // Find templates directory - Updated logic for both dev and production
+    function findTemplatesPath(): string {
+      // When running from installed CLI, templates should be in the CLI package
+      const installedTemplates = path.resolve(__dirname, '../templates');
+      if (fs.existsSync(installedTemplates)) {
+        return installedTemplates;
+      }
       
-      // Check if we're in the correct monorepo structure
-      if (fs.existsSync(path.join(currentPath, 'package.json')) && 
-          fs.existsSync(path.join(currentPath, 'templates'))) {
-        return currentPath;
+      // When running from development, templates are in monorepo root
+      const devTemplates = path.resolve(__dirname, '../../../templates');
+      if (fs.existsSync(devTemplates)) {
+        return devTemplates;
       }
       
       // Fallback: try to find from current working directory
-      currentPath = process.cwd();
+      let currentPath = process.cwd();
       while (currentPath !== path.parse(currentPath).root) {
-        if (fs.existsSync(path.join(currentPath, 'package.json')) && 
-            fs.existsSync(path.join(currentPath, 'templates'))) {
-          return currentPath;
+        const templatesPath = path.join(currentPath, 'templates');
+        if (fs.existsSync(templatesPath)) {
+          return templatesPath;
         }
         currentPath = path.dirname(currentPath);
       }
       
-      // Last resort: use a relative path from the CLI location
-      return path.resolve(__dirname, '../../..');
+      throw new Error('Templates directory not found');
     }
     
-    // Get project root
-    const projectRoot = findProjectRoot();
-    const templatePath = path.join(projectRoot, 'templates', template);
+    // Get templates path and specific template path
+    const templatesPath = findTemplatesPath();
+    const templatePath = path.join(templatesPath, template);
     
     if (!fs.existsSync(templatePath)) {
       spinner.fail(chalk.red(`Template "${template}" not found.`));
       console.log(chalk.yellow(`Looking for template at: ${templatePath}`));
-      console.log(chalk.yellow('Available templates: default-site'));
+      console.log(chalk.yellow(`Templates directory: ${templatesPath}`));
+      
+      // List available templates
+      try {
+        const availableTemplates = fs.readdirSync(templatesPath)
+          .filter(item => fs.statSync(path.join(templatesPath, item)).isDirectory());
+        console.log(chalk.yellow(`Available templates: ${availableTemplates.join(', ')}`));
+      } catch (err) {
+        console.log(chalk.yellow('Could not list available templates'));
+      }
+      
       process.exit(1);
     }
     
-    // Copy template files to destination (Windows-compatible)
-    const isWindows = process.platform === 'win32';
-    const copyCommand = isWindows 
-      ? `xcopy "${templatePath}\\*" "${siteName}\\" /E /I /H /Y /Q`
-      : `cp -r "${templatePath}"/* "${siteName}"/`;
-    
-    // Replace the xcopy command with a JavaScript-based file copy function
+    // Copy template files using the existing copyDir function
     const copyDir = (src: string, dest: string) => {
       // Create destination directory
       if (!fs.existsSync(dest)) {
@@ -141,7 +147,7 @@ export const createSite = async (siteName: string, template: string = 'default-s
       }
     };
     
-    // Then replace the xcopy command with:
+    // Copy template files
     copyDir(templatePath, siteName);
     
     spinner.text = 'Installing dependencies...';
