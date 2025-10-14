@@ -3,6 +3,42 @@
 @tailwind utilities;
 
 /* Custom styles below */
+@layer components {
+  .header-light {
+    @apply bg-slate-50 sticky top-0 z-50;
+    box-shadow: 0 4px 6px -1px rgba(29, 78, 216, 0.15);
+  }
+
+  .header-dark {
+    @apply sticky top-0 z-50;
+    background: #0A1A2F;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 6px -1px rgba(6, 182, 212, 0.3);
+  }
+
+  .footer-light {
+    @apply bg-slate-50;
+  }
+
+  .footer-dark {
+    background: #0A1A2F;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  /* Keep existing nav-link and page-title styles */
+  .nav-link-light {
+    @apply text-slate-800 hover:text-cyan-500 transition-colors;
+  }
+
+  .nav-link-dark {
+    @apply text-white hover:text-cyan-400 transition-colors;
+  }
+
+  .page-title {
+    @apply text-4xl md:text-5xl font-bold text-center mb-8 text-cyan-500;
+  }
+}
+
 @layer utilities {
   .bg-deep-space {
     background: linear-gradient(180deg, #0A1A2F 0%, #0D2538 100%);
