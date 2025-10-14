@@ -58,9 +58,19 @@ export const createSite = async (siteName: string, template: string = 'default-s
       fs.mkdirSync(siteName, { recursive: true });
     }
     
-    // Find project root by looking for package.json
-    function findProjectRoot(startPath: string): string {
-      let currentPath = startPath;
+    // Find project root by looking for package.json - Updated logic
+    function findProjectRoot(): string {
+      // Start from the CLI package directory and go up to find the monorepo root
+      let currentPath = path.resolve(__dirname, '../../..');
+      
+      // Check if we're in the correct monorepo structure
+      if (fs.existsSync(path.join(currentPath, 'package.json')) && 
+          fs.existsSync(path.join(currentPath, 'templates'))) {
+        return currentPath;
+      }
+      
+      // Fallback: try to find from current working directory
+      currentPath = process.cwd();
       while (currentPath !== path.parse(currentPath).root) {
         if (fs.existsSync(path.join(currentPath, 'package.json')) && 
             fs.existsSync(path.join(currentPath, 'templates'))) {
@@ -68,15 +78,18 @@ export const createSite = async (siteName: string, template: string = 'default-s
         }
         currentPath = path.dirname(currentPath);
       }
-      return startPath; // Fallback to starting path if not found
+      
+      // Last resort: use a relative path from the CLI location
+      return path.resolve(__dirname, '../../..');
     }
     
     // Get project root
-    const projectRoot = findProjectRoot(__dirname);
+    const projectRoot = findProjectRoot();
     const templatePath = path.join(projectRoot, 'templates', template);
     
     if (!fs.existsSync(templatePath)) {
       spinner.fail(chalk.red(`Template "${template}" not found.`));
+      console.log(chalk.yellow(`Looking for template at: ${templatePath}`));
       console.log(chalk.yellow('Available templates: default-site'));
       process.exit(1);
     }
