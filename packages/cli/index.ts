@@ -31,12 +31,12 @@ program
 
 // Create command
 program
-  .command('create [name]')
+  .command('create <name>')
   .description('Create a new DocWalrus site')
-  .option('-t, --template <template>', 'Template to use', 'default-site')  // Changed default to 'default-site'
+  .option('-t, --template <template>', 'Template to use', 'default-site')
   .action(async (name, options) => {
     const { createSite } = require('./commands/create');
-    await createSite(name, options.template || 'default-site');  // Changed fallback to 'default-site'
+    await createSite(name, options.template || 'default-site');
   });
 
 // Start command
