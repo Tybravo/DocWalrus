@@ -1,7 +1,7 @@
 import express from 'express';
 import { Server } from 'http';
 import { exec, spawn } from 'child_process';
-import { connectWallet, isWalletConnected } from './wallet';
+import { connectWallet, isWalletConnected, readWalletConfig } from './wallet';
 
 export interface AuthResult {
   success: boolean;
@@ -308,19 +308,48 @@ export const authenticateWallet = async (): Promise<AuthResult> => {
         server?.close();
         resolve({ 
           success: false, 
-          error: 'Authentication timeout (10 minutes). Please try connecting manually or check if the browser opened correctly.' 
+          error: 'Authentication timeout (2 minutes). Please try connecting manually or check if the browser opened correctly.' 
         });
-      }, 600000); // 10 minute timeout instead of 5
+      }, 120000); // 2 minute timeout instead of 10 minutes
 
       // Check for successful authentication periodically
-      const checkAuth = setInterval(() => {
-        if (authResult.success || authResult.error) {
+      const checkAuth = setInterval(async () => {
+        // If we have a result already, resolve with it
+        if (authResult.success) {
           clearTimeout(timeout);
           clearInterval(checkAuth);
           setTimeout(() => {
             server?.close();
           }, 1000);
           resolve(authResult);
+          return;
+        }
+        
+        // Check if wallet is connected directly as a fallback
+        try {
+          const walletConfig = await readWalletConfig();
+          if (walletConfig && walletConfig.address) {
+            clearTimeout(timeout);
+            clearInterval(checkAuth);
+            setTimeout(() => {
+              server?.close();
+            }, 1000);
+            resolve({ success: true, address: walletConfig.address });
+            return;
+          }
+        } catch (err) {
+          // Ignore errors checking wallet connection
+        }
+        
+        // Only fail with specific errors after giving time for connection
+        if (authResult.error) {
+          clearTimeout(timeout);
+          clearInterval(checkAuth);
+          setTimeout(() => {
+            server?.close();
+          }, 1000);
+          resolve(authResult);
+          return;
         }
       }, 1000);
     });
