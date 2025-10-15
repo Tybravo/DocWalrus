@@ -36,18 +36,12 @@ export const createSite = async (siteName: string, template: string = 'default-s
         }
       } else {
         spinner.fail(chalk.red('❌ Wallet authentication failed'));
-        console.log(chalk.red(`Error: ${authResult.error}`));
-        console.log(chalk.yellow('\n🔗 Manual connection options:'));
-        console.log(chalk.cyan('1. Visit https://docwalrus.vercel.app/get-started to connect your wallet'));
-        console.log(chalk.cyan('2. Use the CLI wallet command: docwalrus wallet connect'));
+        console.log(chalk.red(`Error: ${authResult.error || 'Unable to connect wallet'}`));
         process.exit(1);
       }
     } catch (error) {
       spinner.fail(chalk.red('❌ Authentication process failed'));
       console.error(chalk.red('Error:'), error);
-      console.log(chalk.yellow('\n🔗 Manual connection options:'));
-      console.log(chalk.cyan('1. Visit https://docwalrus.vercel.app/get-started to connect your wallet'));
-      console.log(chalk.cyan('2. Use the CLI wallet command: docwalrus wallet connect'));
       process.exit(1);
     }
   } else {
