@@ -10,6 +10,11 @@ import { authenticateWallet } from '../../core/wallet-auth';
 
 // Create site command
 export const createSite = async (siteName: string, template: string = 'default-site'): Promise<void> => {
+  if (!siteName) {
+    console.log(chalk.red('Error: Project name is required'));
+    console.log(chalk.yellow('Usage: docwalrus create <project-name>'));
+    process.exit(1);
+  }
   console.log(chalk.blue(`🚀 Creating new DocWalrus site: ${siteName} with template: ${template}`));
   
   // Check if wallet is connected
